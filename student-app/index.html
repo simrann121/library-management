@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ares Library - Student Portal</title>
+    <meta name="description" content="Smart Library Access System for Students">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Ares Library">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icon-16x16.png">
+    <link rel="apple-touch-icon" href="assets/icon-192x192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/styles.css">
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "your-api-key-here",
+            authDomain: "ares-library-management.firebaseapp.com",
+            databaseURL: "https://ares-library-management-default-rtdb.firebaseio.com",
+            projectId: "ares-library-management",
+            storageBucket: "ares-library-management.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890abcdef"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const messaging = getMessaging(app);
+        
+        // Make Firebase available globally
+        window.firebase = { database, messaging, ref, set, get, onValue, getToken, onMessage };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>🏛️ Ares Library</h1>
+                <p>Smart Access System</p>
+            </div>
+        </header>
+        
+        <main class="main-content">
+            <!-- Login Section -->
+            <section id="login-section" class="section">
+                <div class="card">
+                    <h2>Student Login</h2>
+                    <p>Enter your Student ID to access the library system</p>
+                    
+                    <form id="login-form" class="form">
+                        <div class="input-group">
+                            <label for="student-id">Student ID</label>
+                            <input type="text" id="student-id" name="studentId" 
+                                   placeholder="e.g., 2024001" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="student-name">Full Name</label>
+                            <input type="text" id="student-name" name="studentName" 
+                                   placeholder="e.g., John Doe" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Login</span>
+                            <span class="btn-loading" style="display: none;">Logging in...</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section" style="display: none;">
+                <div class="card">
+                    <div class="dashboard-header">
+                        <h2>Welcome, <span id="student-name-display"></span>!</h2>
+                        <button id="logout-btn" class="btn btn-secondary">Logout</button>
+                    </div>
+                    
+                    <div class="dashboard-content">
+                        <div class="status-card">
+                            <h3>Library Status</h3>
+                            <div class="status-indicator">
+                                <span id="current-status" class="status-badge">Unknown</span>
+                            </div>
+                            <p id="status-message">Checking your library status...</p>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4>Total Visits</h4>
+                                <span id="total-visits" class="stat-number">0</span>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Current Occupancy</h4>
+                                <span id="current-occupancy" class="stat-number">0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="actions">
+                            <button id="check-status-btn" class="btn btn-primary">
+                                Check Library Status
+                            </button>
+                            <button id="submit-reason-btn" class="btn btn-secondary" style="display: none;">
+                                Submit Visit Reason
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Notification Section -->
+            <section id="notification-section" class="section" style="display: none;">
+                <div class="card">
+                    <h2>Visit Reason</h2>
+                    <p>Please select your reason for visiting the library:</p>
+                    
+                    <form id="reason-form" class="form">
+                        <div class="input-group">
+                            <label for="visit-reason">Reason for Visit</label>
+                            <select id="visit-reason" name="reason" required>
+                                <option value="">Select a reason...</option>
+                                <option value="Studying">📚 Studying</option>
+                                <option value="Borrowing Books">📖 Borrowing Books</option>
+                                <option value="Research">🔍 Research</option>
+                                <option value="Group Study">👥 Group Study</option>
+                                <option value="Computer Access">💻 Computer Access</option>
+                                <option value="Quiet Space">🤫 Quiet Space</option>
+                                <option value="Other">📝 Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group" id="other-reason-group" style="display: none;">
+                            <label for="other-reason">Please specify</label>
+                            <input type="text" id="other-reason" name="otherReason" 
+                                   placeholder="Enter your reason...">
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" id="cancel-reason-btn" class="btn btn-secondary">
+                                Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                Submit Reason
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer">
+            <p>&copy; 2024 Ares Library Management System</p>
+        </footer>
+    </div>
+    
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Scripts -->
+    <script src="assets/app.js"></script>
+</body>
+</html>
