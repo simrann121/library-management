@@ -1,0 +1,51 @@
+{
+  "rules": {
+    "students": {
+      "$studentId": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid == $studentId",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+        "fcmToken": {
+          ".validate": "newData.isString()"
+        }
+      }
+    },
+    "library_logs": {
+      "$logId": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.token.role == 'esp32' || auth.uid == newData.child('studentID').val())",
+        "studentID": {
+          ".validate": "newData.isString()"
+        },
+        "status": {
+          ".validate": "newData.isString() && (newData.val() == 'IN' || newData.val() == 'OUT')"
+        },
+        "inTime": {
+          ".validate": "newData.isNumber()"
+        },
+        "outTime": {
+          ".validate": "newData.isNumber() || newData.val() == null"
+        },
+        "reason": {
+          ".validate": "newData.isString() || newData.val() == null"
+        }
+      }
+    },
+    "live_stats": {
+      ".read": "auth != null",
+      ".write": "auth != null && auth.token.role == 'cloud_function'",
+      "currentOccupancy": {
+        ".validate": "newData.isNumber() && newData.val() >= 0"
+      },
+      "lastUpdated": {
+        ".validate": "newData.isNumber()"
+      }
+    },
+    "faculty_access": {
+      ".read": "auth != null && auth.token.role == 'faculty'",
+      ".write": false
+    }
+  }
+}
