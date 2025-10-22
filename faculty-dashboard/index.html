@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ares Library - Faculty Dashboard</title>
+    <meta name="description" content="Faculty Analytics Dashboard for Ares Library Management System">
+    
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, onValue, get, query, orderByChild, limitToLast } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getAuth, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "your-api-key-here",
+            authDomain: "ares-library-management.firebaseapp.com",
+            databaseURL: "https://ares-library-management-default-rtdb.firebaseio.com",
+            projectId: "ares-library-management",
+            storageBucket: "ares-library-management.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef1234567890abcdef"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
+        
+        // Make Firebase available globally
+        window.firebase = { database, auth, ref, onValue, get, query, orderByChild, limitToLast, signInWithCustomToken };
+    </script>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/faculty-styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Modal -->
+        <div id="login-modal" class="modal">
+            <div class="modal-content">
+                <div class="login-card">
+                    <h2>🏛️ Faculty Access</h2>
+                    <p>Enter your credentials to access the analytics dashboard</p>
+                    
+                    <form id="faculty-login-form" class="form">
+                        <div class="input-group">
+                            <label for="faculty-id">Faculty ID</label>
+                            <input type="text" id="faculty-id" name="facultyId" 
+                                   placeholder="e.g., faculty_001" required>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="faculty-password">Password</label>
+                            <input type="password" id="faculty-password" name="password" 
+                                   placeholder="Enter password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span class="btn-text">Login</span>
+                            <span class="btn-loading" style="display: none;">Authenticating...</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Dashboard -->
+        <div id="dashboard" class="dashboard" style="display: none;">
+            <header class="header">
+                <div class="header-content">
+                    <div class="logo">
+                        <h1>🏛️ Ares Library</h1>
+                        <p>Faculty Analytics Dashboard</p>
+                    </div>
+                    <div class="header-actions">
+                        <button id="refresh-btn" class="btn btn-secondary">Refresh</button>
+                        <button id="logout-btn" class="btn btn-outline">Logout</button>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="main-content">
+                <!-- Real-time Stats -->
+                <section class="stats-section">
+                    <h2>Live Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-content">
+                                <h3>Current Occupancy</h3>
+                                <div class="stat-number" id="current-occupancy">0</div>
+                                <div class="stat-change" id="occupancy-change">+0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card success">
+                            <div class="stat-icon">📚</div>
+                            <div class="stat-content">
+                                <h3>Total Visits Today</h3>
+                                <div class="stat-number" id="total-visits-today">0</div>
+                                <div class="stat-change" id="visits-change">+0</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card warning">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-content">
+                                <h3>Average Visit Duration</h3>
+                                <div class="stat-number" id="avg-duration">0m</div>
+                                <div class="stat-change" id="duration-change">+0m</div>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card info">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-content">
+                                <h3>Peak Hour</h3>
+                                <div class="stat-number" id="peak-hour">--:--</div>
+                                <div class="stat-change" id="peak-change">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Charts Section -->
+                <section class="charts-section">
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>Hourly Occupancy</h3>
+                            <canvas id="occupancy-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Visit Reasons</h3>
+                            <canvas id="reasons-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Daily Trends</h3>
+                            <canvas id="trends-chart"></canvas>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3>Student Activity</h3>
+                            <canvas id="activity-chart"></canvas>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Current Visitors -->
+                <section class="visitors-section">
+                    <h2>Current Visitors</h2>
+                    <div class="visitors-container">
+                        <div id="visitors-list" class="visitors-list">
+                            <div class="loading">Loading current visitors...</div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Recent Activity -->
+                <section class="activity-section">
+                    <h2>Recent Activity</h2>
+                    <div class="activity-container">
+                        <div id="activity-list" class="activity-list">
+                            <div class="loading">Loading recent activity...</div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Scripts -->
+    <script src="assets/faculty-app.js"></script>
+</body>
+</html>
