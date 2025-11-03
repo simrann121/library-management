@@ -2,13 +2,9 @@
 
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../../../../core/error/exceptions.dart';
-import '../domain/entities/user.dart';
-import '../domain/entities/auth_data.dart';
-import '../domain/repositories/auth_repository.dart';
-import '../domain/usecases/login_usecase.dart';
-import '../domain/usecases/check_auth_status_usecase.dart';
-import '../domain/usecases/biometric_auth_usecase.dart';
+import '../../domain/entities/user.dart';
+import '../../domain/entities/auth_data.dart';
+import '../../domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   // Add your data sources here (API, local storage, etc.)
@@ -20,9 +16,15 @@ class AuthRepositoryImpl implements AuthRepository {
       await Future.delayed(const Duration(seconds: 1));
 
       // Mock response
+      final now = DateTime.now();
+      final createdAtDate = DateTime(2023, 8, 1);
+      final updatedDate = DateTime(2024, 1, 15);
+      final collegeCreatedAt = DateTime(2020, 1, 1);
+      final collegeUpdatedAt = DateTime(2024, 1, 1);
+
       final response = LoginResponse(
-        token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
-        user: const User(
+        token: 'mock_token_${now.millisecondsSinceEpoch}',
+        user: User(
           id: 'user_123',
           collegeId: 'college_1',
           userType: 'student',
@@ -30,30 +32,31 @@ class AuthRepositoryImpl implements AuthRepository {
           lastName: 'Doe',
           email: 'john.doe@vidyalankar.edu',
           phone: '+91 98765 43210',
-          createdAt: DateTime(2023, 8, 1),
-          updatedAt: DateTime(2024, 1, 15),
+          createdAt: createdAtDate,
+          updatedAt: updatedDate,
         ),
-        college: const College(
+        college: College(
           id: 'college_1',
           trustId: 'trust_1',
           name: 'Vidyalankar School of Information Technology',
           code: 'VSIT',
           type: 'Engineering',
-          address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-          contactInfo: {'email': 'info@vsit.edu'},
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          address: const {'city': 'Mumbai', 'state': 'Maharashtra'},
+          contactInfo: const {'email': 'info@vsit.edu'},
+          config: const {},
+          createdAt: collegeCreatedAt,
+          updatedAt: collegeUpdatedAt,
         ),
-        trust: const Trust(
+        trust: Trust(
           id: 'trust_1',
           name: 'Vidyalankar Dhyanpeeth Trust',
           code: 'VDT',
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          config: const {},
+          createdAt: collegeCreatedAt,
+          updatedAt: collegeUpdatedAt,
         ),
-        expiresAt: DateTime.now().add(const Duration(hours: 8)),
+        availableColleges: [],
+        expiresAt: now.add(const Duration(hours: 8)),
       );
 
       return Right(response);
@@ -80,8 +83,14 @@ class AuthRepositoryImpl implements AuthRepository {
       await Future.delayed(const Duration(seconds: 1));
 
       // Mock data
+      final createdAtDate = DateTime(2023, 8, 1);
+      final updatedDate = DateTime(2024, 1, 15);
+      final collegeCreatedAt = DateTime(2020, 1, 1);
+      final collegeUpdatedAt = DateTime(2024, 1, 1);
+      final now = DateTime.now();
+
       final authData = AuthData(
-        user: const User(
+        user: User(
           id: 'user_123',
           collegeId: 'college_1',
           userType: 'student',
@@ -89,44 +98,31 @@ class AuthRepositoryImpl implements AuthRepository {
           lastName: 'Doe',
           email: 'john.doe@vidyalankar.edu',
           phone: '+91 98765 43210',
-          createdAt: DateTime(2023, 8, 1),
-          updatedAt: DateTime(2024, 1, 15),
+          createdAt: createdAtDate,
+          updatedAt: updatedDate,
         ),
-        college: const College(
+        college: College(
           id: 'college_1',
           trustId: 'trust_1',
           name: 'Vidyalankar School of Information Technology',
           code: 'VSIT',
           type: 'Engineering',
-          address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-          contactInfo: {'email': 'info@vsit.edu'},
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          address: const {'city': 'Mumbai', 'state': 'Maharashtra'},
+          contactInfo: const {'email': 'info@vsit.edu'},
+          config: const {},
+          createdAt: collegeCreatedAt,
+          updatedAt: collegeUpdatedAt,
         ),
-        trust: const Trust(
+        trust: Trust(
           id: 'trust_1',
           name: 'Vidyalankar Dhyanpeeth Trust',
           code: 'VDT',
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          config: const {},
+          createdAt: collegeCreatedAt,
+          updatedAt: collegeUpdatedAt,
         ),
-        token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
-        availableColleges: const [
-          College(
-            id: 'college_1',
-            trustId: 'trust_1',
-            name: 'Vidyalankar School of Information Technology',
-            code: 'VSIT',
-            type: 'Engineering',
-            address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-            contactInfo: {'email': 'info@vsit.edu'},
-            config: {},
-            createdAt: DateTime(2020, 1, 1),
-            updatedAt: DateTime(2024, 1, 1),
-          ),
-        ],
+        token: 'mock_token_${now.millisecondsSinceEpoch}',
+        expiresAt: now.add(const Duration(hours: 8)),
       );
 
       return Right(authData);
@@ -142,8 +138,14 @@ class AuthRepositoryImpl implements AuthRepository {
       await Future.delayed(const Duration(seconds: 2));
 
       // Mock data
+      final createdAtDate = DateTime(2023, 8, 1);
+      final updatedDate = DateTime(2024, 1, 15);
+      final collegeCreatedAt = DateTime(2020, 1, 1);
+      final collegeUpdatedAt = DateTime(2024, 1, 1);
+      final now = DateTime.now();
+
       final authData = AuthData(
-        user: const User(
+        user: User(
           id: 'user_123',
           collegeId: 'college_1',
           userType: 'student',
@@ -151,44 +153,31 @@ class AuthRepositoryImpl implements AuthRepository {
           lastName: 'Doe',
           email: 'john.doe@vidyalankar.edu',
           phone: '+91 98765 43210',
-          createdAt: DateTime(2023, 8, 1),
-          updatedAt: DateTime(2024, 1, 15),
+          createdAt: createdAtDate,
+          updatedAt: updatedDate,
         ),
-        college: const College(
+        college: College(
           id: 'college_1',
           trustId: 'trust_1',
           name: 'Vidyalankar School of Information Technology',
           code: 'VSIT',
           type: 'Engineering',
-          address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-          contactInfo: {'email': 'info@vsit.edu'},
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          address: const {'city': 'Mumbai', 'state': 'Maharashtra'},
+          contactInfo: const {'email': 'info@vsit.edu'},
+          config: const {},
+          createdAt: collegeCreatedAt,
+          updatedAt: collegeUpdatedAt,
         ),
-        trust: const Trust(
+        trust: Trust(
           id: 'trust_1',
           name: 'Vidyalankar Dhyanpeeth Trust',
           code: 'VDT',
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          config: const {},
+          createdAt: collegeCreatedAt,
+          updatedAt: collegeUpdatedAt,
         ),
-        token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
-        availableColleges: const [
-          College(
-            id: 'college_1',
-            trustId: 'trust_1',
-            name: 'Vidyalankar School of Information Technology',
-            code: 'VSIT',
-            type: 'Engineering',
-            address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-            contactInfo: {'email': 'info@vsit.edu'},
-            config: {},
-            createdAt: DateTime(2020, 1, 1),
-            updatedAt: DateTime(2024, 1, 1),
-          ),
-        ],
+        token: 'mock_token_${now.millisecondsSinceEpoch}',
+        expiresAt: now.add(const Duration(hours: 8)),
       );
 
       return Right(authData);
