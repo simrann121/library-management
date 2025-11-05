@@ -2,9 +2,8 @@
 
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../domain/entities/book.dart';
-import '../domain/repositories/books_repository.dart';
-import '../domain/usecases/search_books_usecase.dart';
+import '../../domain/entities/book.dart';
+import '../../domain/repositories/books_repository.dart';
 
 class BooksRepositoryImpl implements BooksRepository {
   @override

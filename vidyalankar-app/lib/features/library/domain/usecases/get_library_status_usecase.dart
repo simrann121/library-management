@@ -2,6 +2,7 @@
 
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
+import '../entities/library.dart';
 import '../repositories/library_repository.dart';
 
 class GetLibraryStatusUsecase {
@@ -33,59 +34,4 @@ class ScanQrCodeUsecase {
       String qrCode, String collegeId) async {
     return await repository.scanQrCode(qrCode, collegeId);
   }
-}
-
-// Models
-class LibraryStatus {
-  final bool isOpen;
-  final int currentOccupancy;
-  final int maxCapacity;
-  final String statusMessage;
-
-  const LibraryStatus({
-    required this.isOpen,
-    required this.currentOccupancy,
-    required this.maxCapacity,
-    required this.statusMessage,
-  });
-}
-
-class LibraryStats {
-  final int totalBooks;
-  final int activeUsers;
-  final int todayVisits;
-  final List<LibraryActivity> recentActivity;
-
-  const LibraryStats({
-    required this.totalBooks,
-    required this.activeUsers,
-    required this.todayVisits,
-    required this.recentActivity,
-  });
-}
-
-class QrScanResult {
-  final bool success;
-  final String message;
-  final String? studentId;
-
-  const QrScanResult({
-    required this.success,
-    required this.message,
-    this.studentId,
-  });
-}
-
-class LibraryActivity {
-  final String title;
-  final String subtitle;
-  final String time;
-  final String icon;
-
-  const LibraryActivity({
-    required this.title,
-    required this.subtitle,
-    required this.time,
-    required this.icon,
-  });
 }
