@@ -2,7 +2,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../../auth/domain/entities/user.dart';
+import '../../domain/entities/college_selection.dart';
 
 // Events
 abstract class CollegeSelectionEvent extends Equatable {
@@ -36,7 +36,7 @@ class CollegeSelectionInitial extends CollegeSelectionState {}
 class CollegeSelectionLoading extends CollegeSelectionState {}
 
 class CollegeSelectionLoaded extends CollegeSelectionState {
-  final List<College> colleges;
+  final List<CollegeSelection> colleges;
 
   const CollegeSelectionLoaded({required this.colleges});
 
@@ -54,7 +54,7 @@ class CollegeSelectionError extends CollegeSelectionState {
 }
 
 class CollegeSelected extends CollegeSelectionState {
-  final College college;
+  final CollegeSelection college;
 
   const CollegeSelected({required this.college});
 
@@ -80,42 +80,50 @@ class CollegeSelectionBloc
       // Mock data - replace with actual API call
       await Future.delayed(const Duration(seconds: 1));
 
-      final colleges = const [
-        College(
+      final now = DateTime.now();
+      final colleges = [
+        CollegeSelection(
           id: 'college_1',
-          trustId: 'trust_1',
           name: 'Vidyalankar School of Information Technology',
           code: 'VSIT',
-          type: 'Engineering',
-          address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-          contactInfo: {'email': 'info@vsit.edu'},
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          description: 'Leading IT education institution',
+          logoUrl: 'assets/logos/vsit_logo.png',
+          primaryColor: '0xFF2563EB',
+          secondaryColor: '0xFF64748B',
+          departments: const [
+            'Computer Science',
+            'Information Technology',
+            'Data Science'
+          ],
+          isActive: true,
+          createdAt: now,
+          updatedAt: now,
         ),
-        College(
+        CollegeSelection(
           id: 'college_2',
-          trustId: 'trust_1',
           name: 'Vidyalankar Institute of Technology',
           code: 'VIT',
-          type: 'Engineering',
-          address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-          contactInfo: {'email': 'info@vit.edu'},
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          description: 'Premier engineering college',
+          logoUrl: 'assets/logos/vit_logo.png',
+          primaryColor: '0xFF059669',
+          secondaryColor: '0xFF10B981',
+          departments: const ['Mechanical', 'Electronics', 'Civil', 'Computer'],
+          isActive: true,
+          createdAt: now,
+          updatedAt: now,
         ),
-        College(
+        CollegeSelection(
           id: 'college_3',
-          trustId: 'trust_1',
           name: 'Vidyalankar Polytechnic',
           code: 'VP',
-          type: 'Polytechnic',
-          address: {'city': 'Mumbai', 'state': 'Maharashtra'},
-          contactInfo: {'email': 'info@vp.edu'},
-          config: {},
-          createdAt: DateTime(2020, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
+          description: 'Technical education excellence',
+          logoUrl: 'assets/logos/vp_logo.png',
+          primaryColor: '0xFFDC2626',
+          secondaryColor: '0xFFEF4444',
+          departments: const ['Mechanical', 'Electronics', 'Computer'],
+          isActive: true,
+          createdAt: now,
+          updatedAt: now,
         ),
       ];
 
