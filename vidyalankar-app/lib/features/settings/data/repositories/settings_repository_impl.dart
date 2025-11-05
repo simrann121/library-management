@@ -2,9 +2,8 @@
 
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../domain/entities/settings.dart';
-import '../domain/repositories/settings_repository.dart';
-import '../domain/usecases/get_settings_usecase.dart';
+import '../../domain/entities/settings.dart';
+import '../../domain/repositories/settings_repository.dart';
 
 class SettingsRepositoryImpl implements SettingsRepository {
   @override
@@ -35,7 +34,7 @@ class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> updateSetting(String key, dynamic value) async {
+  Future<Either<Failure, void>> updateSettings(String key, dynamic value) async {
     try {
       // Mock implementation - replace with actual API call
       await Future.delayed(const Duration(milliseconds: 500));
