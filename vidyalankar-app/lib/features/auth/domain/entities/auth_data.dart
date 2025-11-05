@@ -9,6 +9,7 @@ class AuthData extends Equatable {
   final College college;
   final Trust trust;
   final DateTime expiresAt;
+  final List<College> availableColleges;
 
   const AuthData({
     required this.token,
@@ -16,8 +17,10 @@ class AuthData extends Equatable {
     required this.college,
     required this.trust,
     required this.expiresAt,
+    this.availableColleges = const [],
   });
 
   @override
-  List<Object?> get props => [token, user, college, trust, expiresAt];
+  List<Object?> get props =>
+      [token, user, college, trust, expiresAt, availableColleges];
 }

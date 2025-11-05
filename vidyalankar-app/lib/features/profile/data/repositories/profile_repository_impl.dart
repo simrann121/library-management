@@ -2,9 +2,8 @@
 
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../domain/entities/profile.dart';
-import '../domain/repositories/profile_repository.dart';
-import '../domain/usecases/get_profile_usecase.dart';
+import '../../domain/entities/profile.dart';
+import '../../domain/repositories/profile_repository.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   @override
